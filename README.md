@@ -1,10 +1,8 @@
 # ConvNeXt 학습 가이드
 
-이 문서는 ConvNeXt 모델을 학습시키는 Python 스크립트(`train.py`)와 사용 예시입니다.
+이 문서는 ConvNeXt 모델을 학습시키는 Python 스크립트(`data_to_csv.py`, `train.py`, `export_onnx.py`)와 사용 예시입니다.
 
 ---
-
-[Uploading data_to_csv.py…]()
 
 
 ## 1. 데이터 분할 및 CSV 생성 스크립트 사용법
@@ -90,7 +88,6 @@ python train.py \
   --lr 1e-3 \
   --weight-decay 1e-4 \
   --output-dir ./logs/convnext_base \
-  --onnx-name convnext_tiny.onnx
 ```
 
 * `--model`: 사용할 ConvNeXt 모델 종류 (`convnext_tiny`, `convnext_small`, `convnext_base`, `convnext_large`)
@@ -101,14 +98,43 @@ python train.py \
 * `--lr`: 초기 학습률
 * `--weight-decay`: 가중치 감쇠(정규화) 값
 * `--output-dir`: 모델 체크포인트와 로그 저장 폴더
-* `--onnx-name`: ONNX로 export할 파일명
 
 ## 6. 학습 결과
 
 * 학습 도중 가장 낮은 검증 손실을 기록한 모델이 `logs/convnext_base/best_{model}_epoch*.pth` 형태로 저장됩니다。
 * 학습이 끝나면 검증 정확도가 출력되고, `evaluation_results.csv` 파일에 예측 결과와 정답이 함께 저장됩니다。
 
-## 7. 팁
+
+## 7. ONNX 모델 내보내기 (export_onnx.py)
+
+학습된 PyTorch 체크포인트(.pth)를 ONNX 포맷(.onnx)으로 변환합니다.
+```bash
+python export_onnx.py \
+  --model convnext_tiny \
+  --checkpoint ./logs/convnext_tiny/best_convnext_tiny_epoch30.pth \
+  --num-classes 10 \
+  --onnx-name convnext_tiny.onnx \
+  --output-dir ./onnx \
+  --input-size 1 3 224 224 \
+  --device cuda
+```
+
+`--model`: 변환할 ConvNeXt 종류
+
+`--checkpoint`: PyTorch 체크포인트(.pth) 경로
+
+`--num-classes`: 최종 분류 클래스 수
+
+`--onnx-name`: 출력 ONNX 파일 이름
+
+`--output-dir`: ONNX 파일 저장 디렉토리
+
+`--input-size`: 더미 입력 텐서 크기 (B C H W)   (train.py에 보면 transforms.Resize((224, 224)), 같은 함수가 있는데 여기서 224를 사용했다면  (1 3 224 224)를 사용하시면 됩니다.)
+
+`--device`: cpu 사용하신다면 cpu / gpu 사용하신다면 cuda 입력하시면 됩니다.
+
+
+## 8. 팁
 
 * **Early Stopping**: `--patience` 옵션(기본 20)으로 손실이 개선되지 않아도 멈추기 전 기다릴 에폭 수 지정
 * **Mixup/Cutmix 강도**: `--alpha` 값을 조정해 증강 강도 변경 가능
