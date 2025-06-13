@@ -4,6 +4,9 @@
 
 ---
 
+[Uploading data_to_csv.py…]()
+
+
 ## 1. 데이터 분할 및 CSV 생성 스크립트 사용법
 
 `data_to_csv.py` 스크립트는 원본 이미지 폴더를 train/val로 5:5 비율로 분할하고, 각 폴더별로 레이블이 포함된 CSV 파일을 자동 생성해 줍니다.
@@ -12,12 +15,14 @@
 python data_to_csv.py \
   --original_dir "/home/kkh/과업 1-B 상황별(놀이별) 사진분류/활동분류/데이터 폴더" \
   --train_csv "/home/kkh/과업 1-B 상황별(놀이별) 사진분류/활동분류/image_labels_train.csv" \
-  --val_csv   "/home/kkh/과업 1-B 상황별(놀이별) 사진분류/활동분류/image_labels_val.csv"
+  --val_csv   "/home/kkh/과업 1-B 상황별(놀이별) 사진분류/활동분류/image_labels_val.csv" \
+  --val_ratio 0.2
 ```
 
 * `--original_dir` (`-o`): 원본 이미지가 들어있는 최상위 폴더 경로 (위치가 정확해야 합니다. copy path를 이용하시는 것을 추천드립니다.)
 * `--train_csv` (`-t`): 생성할 학습용 CSV 파일 경로
 * `--val_csv` (`-v`): 생성할 검증용 CSV 파일 경로
+* `--val_ratio` (`-r`): 검증 데이터로 사용할 비율을 0보다 크고 1보다 작은 실수로 지정합니다. 예를 들어 0.2는 전체의 20%를 val 폴더로 분할합니다.
 
 * 참고
 
